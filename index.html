@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meniu Principal - MateQuiz 2026</title>
+    <!-- Font modern Google Fonts -->
+    <link href="fonts.googleapis.com" rel="stylesheet">
+    <style>
+        :root { 
+            --bg: #05050a; 
+            --card: rgba(26, 26, 46, 0.7); 
+            --accent: #e94560; 
+            --text: #ffffff; 
+            --blue: #2980b9;
+            --green: #27ae60;
+            --purple: #8e44ad;
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: var(--bg); 
+            background-image: 
+                radial-gradient(circle at 10% 20%, #1a1a4e 0%, transparent 25%),
+                radial-gradient(circle at 90% 80%, #4e1a1a 0%, transparent 25%);
+            color: var(--text); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden;
+        }
+
+        .container { 
+            background: var(--card); 
+            backdrop-filter: blur(15px);
+            padding: 2.5rem; 
+            border-radius: 24px; 
+            width: 90%; 
+            max-width: 400px; 
+            text-align: center; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        h1 { 
+            font-weight: 600; 
+            letter-spacing: 3px; 
+            color: var(--accent); 
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        p { opacity: 0.8; font-size: 0.9rem; margin-bottom: 25px; }
+
+        /* Butoane stilizate */
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 1rem; 
+            color: white; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #btn-inmultire { 
+            background: linear-gradient(135deg, var(--blue), #3498db); 
+            box-shadow: 0 4px 15px rgba(41, 128, 185, 0.3);
+        }
+
+        #btn-impartire { 
+            background: linear-gradient(135deg, var(--purple), #9b59b6); 
+            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+        }
+
+        #btn-adunare { 
+            background: linear-gradient(135deg, var(--green), #2ecc71); 
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        button:hover { 
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            filter: brightness(1.1);
+        }
+
+        #btn-admin { 
+            background: rgba(255, 255, 255, 0.05); 
+            font-size: 0.75rem; 
+            width: 60%; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+            color: #aaa;
+        }
+
+        #btn-admin:hover { 
+            background: #555; 
+            color: white; 
+            border-color: transparent;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>BUN VENIT!</h1>
+        <p>Ce misiuni rezolvăm astăzi?</p>
+        
+        <button id="btn-inmultire" onclick="window.location.href='inmultire.html'">✖️ ÎNMULȚIRE</button>
+        <button id="btn-impartire" onclick="window.location.href='calcule.html'">➗ ÎMPĂRȚIRE</button>
+        <button id="btn-adunare" onclick="window.location.href='scadereadunare.html'">➕ ADUNARE ȘI SCĂDERE</button>
+
+        <p style="margin-top: 20px;">
+            <button id="btn-admin" onclick="window.location.href='admin.html'">⚙️ PANOU ADMIN</button>
+        </p>
+    </div>
+
+</body>
+</html>

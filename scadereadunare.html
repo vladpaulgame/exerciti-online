@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adunare și Scădere - MateQuiz 2026</title>
+    <link href="fonts.googleapis.com" rel="stylesheet">
+    <style>
+        :root { --bg: #05050a; --card: rgba(26, 26, 46, 0.8); --accent: #e94560; --green: #27ae60; --blue: #2980b9; --text: #ffffff; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); background-image: radial-gradient(circle at 15% 25%, #1a1a4e 0%, transparent 25%), radial-gradient(circle at 85% 75%, #4e1a1a 0%, transparent 25%); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: var(--card); backdrop-filter: blur(15px); padding: 2.5rem; border-radius: 24px; text-align: center; width: 90%; max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .hidden { display: none; }
+        input, select { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white; font-size: 1rem; text-align: center; box-sizing: border-box; }
+        button { width: 100%; padding: 16px; margin-top: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; color: white; text-transform: uppercase; transition: 0.3s; }
+        #btn-start { background: linear-gradient(135deg, var(--green), #2ecc71); }
+        #btn-check { background: linear-gradient(135deg, var(--blue), #3498db); }
+        #question { font-size: 4rem; font-weight: 700; margin: 20px 0; color: #f1c40f; text-shadow: 0 0 20px rgba(241, 196, 15, 0.3); }
+        #message { height: 35px; font-size: 1.2rem; font-weight: 600; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <!-- ECRAN CONECTARE -->
+    <div id="screen-start" class="container">
+        <h1>MATE QUIZ</h1>
+        <input type="text" id="input-name" placeholder="Numele tău (Elev)..." maxlength="20">
+        <input type="text" id="input-prof" placeholder="Scrie: Doamna Numele Doamnei">
+        <select id="select-type">
+            <option value="add_no">Adunare (fără trecere)</option>
+            <option value="sub_no">Scădere (fără trecere)</option>
+            <option value="all">Amestecate</option>
+        </select>
+        <select id="select-nr">
+            <option value="20">20 întrebări</option>
+            <option value="50">50 întrebări</option>
+        </select>
+        <button id="btn-start">CONECTARE LA DOAMNĂ</button>
+    </div>
+
+    <!-- ECRAN JOC -->
+    <div id="screen-game" class="container hidden">
+        <div id="progress" style="color:#aaa;"></div>
+        <div id="question">-- + --</div>
+        <div id="message"></div>
+        <input type="number" id="input-ans" placeholder="Răspuns..." inputmode="numeric">
+        <button id="btn-check">VERIFICĂ</button>
+    </div>
+
+    <!-- ECRAN FINAL -->
+    <div id="screen-final" class="container hidden">
+        <h1>REZULTAT FINAL</h1>
+        <div id="result-text" style="font-size:1.5rem; margin-bottom:25px;"></div>
+        <button onclick="location.reload()" style="background:#8e44ad;">REIA TESTUL</button>
+    </div>
+
+    <script>
+        let corecte = 0, index = 0, total = 0, numeJucator = "", numeProfSalvat = "", a, b, corectVal;
+
+        document.getElementById('btn-start').onclick = () => {
+            const inputProf = document.getElementById('input-prof').value.trim();
+            const nume = document.getElementById('input-name').value.trim();
+
+            // Verificare prefix "Doamna "
+            if(!inputProf.startsWith("Doamna ")) {
+                alert("EROARE: Trebuie să scrii 'Doamna ' înaintea numelui! (Ex: Doamna Ionescu Ana)");
+                return;
+            }
+
+            const numeCuratProf = inputProf.replace("Doamna ", "");
+            const profData = localStorage.getItem(`prof_${numeCuratProf}`);
+
+            if(!nume || !profData) {
+                alert("EROARE: Doamna " + numeCuratProf + " nu există în sistem sau nu ai scris numele tău!");
+                return;
+            }
+
+            numeJucator = nume;
+            numeProfSalvat = numeCuratProf;
+            total = parseInt(document.getElementById('select-nr').value);
+            document.getElementById('screen-start').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+            urmatoarea();
+        };
+
+        function genereaza(tip) {
+            let t = tip === 'all' ? (Math.random() > 0.5 ? 'add_no' : 'sub_no') : tip;
+            if(t === 'add_no') { 
+                a = Math.floor(Math.random()*40)+10; 
+                b = Math.floor(Math.random()*9); 
+                corectVal = a+b; return `${a} + ${b}`; 
+            } else { 
+                a = Math.floor(Math.random()*50)+10; 
+                b = Math.floor(Math.random()*9); 
+                corectVal = a-b; return `${a} - ${b}`; 
+            }
+        }
+
+        function urmatoarea() {
+            if (index < total) {
+                document.getElementById('question').innerText = genereaza(document.getElementById('select-type').value);
+                document.getElementById('progress').innerText = `Exercițiul ${index+1}/${total}`;
+                document.getElementById('input-ans').value = "";
+                document.getElementById('input-ans').disabled = false;
+                document.getElementById('input-ans').focus();
+            } else { finaliza(); }
+        }
+
+        function verifica() {
+            let val = document.getElementById('input-ans').value;
+            if(!val || document.getElementById('input-ans').disabled) return;
+            document.getElementById('input-ans').disabled = true;
+            
+            if(parseInt(val) === corectVal) {
+                corecte++;
+                document.getElementById('message').innerText = "✅ CORECT!";
+                document.getElementById('message').style.color="#27ae60";
+            } else {
+                document.getElementById('message').innerText = "❌ GREȘIT! (" + corectVal + ")";
+                document.getElementById('message').style.color="#e94560";
+            }
+            index++;
+            setTimeout(urmatoarea, 800);
+        }
+
+        function finaliza() {
+            let nota = ((corecte/total)*10).toFixed(2);
+            let date = JSON.parse(localStorage.getItem('scoruri_tabla')) || [];
+            
+            // Salvăm nota legată de numele elevului ȘI numele profesorului
+            date.push({ 
+                nume: numeJucator, 
+                profesor: numeProfSalvat, 
+                nota: nota, 
+                data: new Date().toLocaleString('ro-RO'),
+                detalii: "Adunare/Scădere"
+            });
+            
+            localStorage.setItem('scoruri_tabla', JSON.stringify(date));
+            document.getElementById('result-text').innerHTML = `Elev: ${numeJucator}<br>Nota: <b>${nota}</b>`;
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-final').classList.remove('hidden');
+        }
+
+        document.getElementById('btn-check').onclick = verifica;
+        document.getElementById('input-ans').onkeypress = (e) => { if(e.key === 'Enter') verifica(); };
+    </script>
+</body>
+</html>
